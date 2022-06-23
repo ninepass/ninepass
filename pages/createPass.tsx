@@ -69,7 +69,7 @@ export type NinePassData = {
 }
 
 export default function CreatePass({ navigation, route }: NativeStackScreenProps<RootStackParamList, 'CreatePass'>) {
-    console.log("route: ", route.params)
+    // console.log("route: ", route.params)
 
     const emailList = [{ id: "1", title: 'test' }, { id: "2", title: 'test2' }, { id: "3", title: 'test3' }];
     const [data, setData] = useState<NinePassData>({ label: "", name: "", site: "", email: "", phone: "", user: "", password: "" })

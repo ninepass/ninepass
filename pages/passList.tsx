@@ -4,10 +4,11 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NativeStackNavigatorProps, NativeStackScreenProps } from '@react-navigation/native-stack/lib/typescript/src/types';
 import { RootStackParamList } from './routers';
 
-import { Input, Icon, ListItem, Button, SpeedDial, SearchBar, SocialIcon,Avatar } from '@rneui/themed';
+import { Input, Icon, ListItem, Button, SpeedDial, SearchBar, SocialIcon, Avatar } from '@rneui/themed';
 
 import { getData } from "../store/secureStore";
 import { iconDataList } from "../store/icon";
+import {NinePassData} from "./createPass"
 
 const findIcon = (name: string) => {
     let icon = iconDataList.find(item => item.type === name.toLowerCase())
@@ -33,7 +34,7 @@ const Item = ({ data, navigation }: any) => (
     >
         {
             findIcon(data.label) ? <SocialIcon
-                type={data.label.toLowerCase()} /> : <Avatar size={64} rounded iconStyle={{backgroundColor:"red"}}><Text style={{fontSize:32,textAlign:"center"}}>{data.label[0]?.toLocaleUpperCase()}</Text></Avatar>
+                type={data.label.toLowerCase()} /> : <Avatar size={64} rounded iconStyle={{ backgroundColor: "red" }}><Text style={{ fontSize: 32, textAlign: "center" }}>{data.label[0]?.toLocaleUpperCase()}</Text></Avatar>
         }
         <ListItem.Content>
             {data.label ? <ListItem.Title style={styles.title}>{data.label}</ListItem.Title> : null}
@@ -104,6 +105,18 @@ export default function PassList({ navigation }: NativeStackScreenProps<RootStac
     const [text, onChangeText] = React.useState('');
     // const [number, onChangeNumber] = React.useState(null);
     const [list, setList] = useState(global.data || [])
+    let [renderList, setRenderList] = useState<NinePassData[]>([])
+
+    const onSearch = (search:string) => {
+        setRenderList(list.filter((item:NinePassData)=>{
+            if (item.label?.includes(search)||item.name?.includes(search)||item.user?.includes(search)){
+                return item
+            }else {
+                return false
+            }
+        }))
+        onChangeText(search)
+    }
 
     const onPress = () => {
         navigation.navigate('CreatePass', undefined);
@@ -115,15 +128,16 @@ export default function PassList({ navigation }: NativeStackScreenProps<RootStac
         const fetchDdata = async () => {
             let data = await getData("DATA")
             setList(data)
+            setRenderList(data)
         }
         fetchDdata()
     }, [])
 
     return <SafeAreaView style={styles.container}>
 
-        <SearchBar placeholder='Search' onChangeText={onChangeText} value={text} onClear={() => onChangeText("")} />
+        <SearchBar placeholder='Search' onChangeText={onSearch} value={text} onClear={() => onChangeText("")} />
 
-        <FlatList style={styles.listContainer} data={list} renderItem={renderItem} keyExtractor={(item, key) => key + ""} />
+        <FlatList style={styles.listContainer} data={renderList} renderItem={renderItem} keyExtractor={(item, key) => key + ""} />
 
         <SpeedDial
             isOpen={open}
