@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TextInput, ScrollView, Dimensions, Alert } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, StatusBar, TextInput, ScrollView, Dimensions, Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NativeStackNavigatorProps, NativeStackScreenProps } from '@react-navigation/native-stack/lib/typescript/src/types';
 import { RootStackParamList } from './routers';
@@ -8,7 +8,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import * as Crypto from 'expo-crypto';
 import { Barometer } from 'expo-sensors';
 import * as Random from 'expo-random';
-import { Button } from "@rneui/themed";
+import { Button, Input, Icon,Text } from "@rneui/themed";
 
 
 import { applyStoreData } from "../store/secureStore"
@@ -19,16 +19,20 @@ const styles = StyleSheet.create({
         flex: 1,
         marginTop: StatusBar.currentHeight || 0,
     },
+    title: {
+        fontSize: 24
+    },
     item: {
         flexDirection: "row",
         justifyContent: 'space-between',
         alignItems: 'center',
-        margin: 10,
+        // margin: 10,
     },
     itemIcon: {
         position: "absolute",
         zIndex: 1,
-        right: 10,
+        right: 20,
+        bottom:40
     },
     name: {
         fontSize: 18
@@ -42,7 +46,9 @@ const styles = StyleSheet.create({
     },
     button: {
         width: "40%",
-        marginTop: 50
+        marginTop: 50,
+        marginRight:10,
+        marginLeft:10
     },
     itemText: {
         fontSize: 15,
@@ -137,17 +143,48 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
     }
 
     return <SafeAreaView style={styles.container}>
+        <View style={{margin:10}}><Text h3>添加账号信息</Text></View>
         <View style={styles.item}>
-            <TextInput style={styles.input} placeholder="自定义标签" onChangeText={setLabel} value={label} />
+            <Input style={styles.input} placeholder="自定义标签" leftIcon={
+                <Icon
+                    name='label'
+                    size={24}
+                    color='black'
+                />
+            } onChangeText={setLabel} value={label} />
         </View>
         <View style={styles.item}>
-            <TextInput style={styles.input} placeholder="名称*" onChangeText={setName} value={name} />
+            <Input style={styles.input} placeholder="名称*" leftIcon={
+                <Icon
+                    name='rename-box'
+                    size={24}
+                    color='black'
+                    type='material-community'
+                />
+            } onChangeText={setName} value={name} />
         </View>
         <View style={styles.item}>
-            <TextInput style={styles.input} placeholder="网址" onChangeText={setSite} value={site} />
+            <Input style={styles.input} placeholder="网址" leftIcon={
+                <Icon
+                    name='web'
+                    size={24}
+                    color='black'
+                />
+            } onChangeText={setSite} value={site} />
         </View>
         <View style={styles.item}>
-
+        <Input style={styles.input} placeholder="邮箱" leftIcon={
+                <Icon
+                    name='email'
+                    size={24}
+                    color='black'
+                />
+            } onChangeText={setSite} value={site} />
+            {/* <Icon
+                name='email'
+                size={24}
+                color='black'
+            />
             <View style={{ width: "100%" }}>
                 <AutocompleteDropdown
                     clearOnFocus={false}
@@ -161,20 +198,40 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
                     }
 
                 />
-            </View>
+            </View> */}
 
         </View>
         <View style={styles.item}>
-            <TextInput style={styles.input} placeholder="手机" onChangeText={setPhone} value={phone} />
+            <Input style={styles.input} placeholder="手机" leftIcon={
+                <Icon
+                    name='phone'
+                    size={24}
+                    color='black'
+                />
+            } onChangeText={setPhone} value={phone} />
         </View>
         <View style={styles.item}>
-            <TextInput style={styles.input} placeholder="用户名*" onChangeText={setUser} value={user} />
+            <Input style={styles.input} placeholder="用户名*"  leftIcon={
+                <Icon
+                    name='user-circle'
+                    size={24}
+                    color='black'
+                    type='font-awesome-5'
+                />
+            } onChangeText={setUser} value={user} />
             <View style={styles.itemIcon}>
                 {user ? <MaterialIcons name="cancel" size={24} color="black" onPress={() => setUser("")} /> : <MaterialIcons name="create" size={24} color="black" onPress={createUser} />}
             </View>
         </View>
         <View style={styles.item}>
-            <TextInput style={styles.input} placeholder="密码*" onChangeText={setPassword} value={password} />
+            <Input style={styles.input} placeholder="密码*"  leftIcon={
+                <Icon
+                    name='onepassword'
+                    size={24}
+                    color='black'
+                    type='material-community'
+                />
+            } onChangeText={setPassword} value={password} />
             <View style={styles.itemIcon}>
                 {password ? <MaterialIcons name="cancel" size={24} color="black" onPress={() => setPassword("")} /> : <MaterialIcons name="create" size={24} color="black" onPress={createPassword} />}
             </View>
