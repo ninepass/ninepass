@@ -179,7 +179,7 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
                     size={24}
                     color='black'
                 />
-            } onChangeText={setSite} value={site} />
+            } onChangeText={setEmail} value={email} />
             {/* <Icon
                 name='email'
                 size={24}
