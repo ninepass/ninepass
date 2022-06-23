@@ -4,19 +4,46 @@ import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NativeStackNavigatorProps, NativeStackScreenProps } from '@react-navigation/native-stack/lib/typescript/src/types';
 import { RootStackParamList } from './routers';
 
+import { Input, Icon, ListItem, Button, SpeedDial, SearchBar, SocialIcon,Avatar } from '@rneui/themed';
 
-import { getData } from "../store/secureStore"
+import { getData } from "../store/secureStore";
+import { iconDataList } from "../store/icon";
 
-const Item = ({data,navigation}: any) => (
-    <View style={styles.item}>
-        <TouchableOpacity onPress={()=>navigation.navigate("CreatePass",data)}>
-            {data.label ? <Text style={styles.title}>{data.label}</Text> : null}
-            {data.name ? <Text style={styles.title}>{data.name}</Text> : null}
-            {data.email ? <Text style={styles.title}>{data.email}</Text> : null}
-            {data.phone ? <Text style={styles.title}>{data.phone}</Text> : null}
-            {data.user ? <Text style={styles.title}>{data.user}</Text> : null}
-        </TouchableOpacity>
-    </View>
+const findIcon = (name: string) => {
+    let icon = iconDataList.find(item => item.type === name.toLowerCase())
+    if (icon) {
+        return icon.type
+    } else {
+        return ""
+    }
+}
+
+const Item = ({ data, navigation }: any) => (
+    <ListItem.Swipeable
+        style={styles.item}
+        onPress={() => navigation.navigate("CreatePass", data)}
+        rightContent={(reset) => (
+            <Button
+                title="Delete"
+                onPress={() => reset()}
+                icon={{ name: 'delete', color: 'white' }}
+                buttonStyle={{ minHeight: '100%', backgroundColor: 'red' }}
+            />
+        )}
+    >
+        {
+            findIcon(data.label) ? <SocialIcon
+                type={data.label.toLowerCase()} /> : <Avatar size={64} rounded iconStyle={{backgroundColor:"red"}}><Text style={{fontSize:32,textAlign:"center"}}>{data.label[0]?.toLocaleUpperCase()}</Text></Avatar>
+        }
+        <ListItem.Content>
+            {data.label ? <ListItem.Title style={styles.title}>{data.label}</ListItem.Title> : null}
+            {data.name ? <ListItem.Subtitle style={styles.title}>{data.name}</ListItem.Subtitle> : null}
+            {data.email ? <ListItem.Subtitle style={styles.title}>{data.email}</ListItem.Subtitle> : null}
+            {data.phone ? <ListItem.Subtitle style={styles.title}>{data.phone}</ListItem.Subtitle> : null}
+            {data.user ? <ListItem.Subtitle style={styles.title}>{data.user}</ListItem.Subtitle> : null}
+        </ListItem.Content>
+        <ListItem.Chevron />
+    </ListItem.Swipeable>
 );
 
 const styles = StyleSheet.create({
@@ -25,10 +52,10 @@ const styles = StyleSheet.create({
         marginTop: StatusBar.currentHeight || 0,
     },
     item: {
-        backgroundColor: '#fff',
-        padding: 20,
-        marginVertical: 8,
-        marginHorizontal: 16,
+        // backgroundColor: '#fff',
+        // padding: 20,
+        // marginVertical: 8,
+        // marginHorizontal: 16,
         borderRadius: 5,
         shadowColor: "#000",
         shadowOffset: {
@@ -61,7 +88,7 @@ const styles = StyleSheet.create({
         position: 'absolute',
     },
     listContainer: {
-        marginTop: 50,
+        // marginTop: 50,
         width: Dimensions.get('window').width,
         backgroundColor: '#f1f1f1',
     },
@@ -74,13 +101,15 @@ const styles = StyleSheet.create({
 
 export default function PassList({ navigation }: NativeStackScreenProps<RootStackParamList, 'PassList'>) {
     const renderItem = ({ item }: any) => <Item data={item} navigation={navigation} />;
-    const [text, onChangeText] = React.useState('Useless Text');
+    const [text, onChangeText] = React.useState('');
     // const [number, onChangeNumber] = React.useState(null);
     const [list, setList] = useState(global.data || [])
 
     const onPress = () => {
-        navigation.navigate('CreatePass',undefined);
+        navigation.navigate('CreatePass', undefined);
     }
+
+    const [open, setOpen] = React.useState(false);
 
     useEffect(() => {
         const fetchDdata = async () => {
@@ -91,12 +120,30 @@ export default function PassList({ navigation }: NativeStackScreenProps<RootStac
     }, [])
 
     return <SafeAreaView style={styles.container}>
-        <View style={styles.inputContainer}>
-            <TextInput style={styles.input} onChangeText={onChangeText} value={text} />
-        </View>
+
+        <SearchBar placeholder='Search' onChangeText={onChangeText} value={text} onClear={() => onChangeText("")} />
+
         <FlatList style={styles.listContainer} data={list} renderItem={renderItem} keyExtractor={(item, key) => key + ""} />
-        <View style={styles.plusContainer}>
-            <MaterialCommunityIcons name="database-plus" size={80} color="#999" onPress={onPress} />
-        </View>
+
+        <SpeedDial
+            isOpen={open}
+            icon={{ name: 'edit', color: '#fff' }}
+            openIcon={{ name: 'close', color: '#fff' }}
+            onOpen={() => setOpen(!open)}
+            onClose={() => setOpen(!open)}
+        >
+            <SpeedDial.Action
+                icon={{ name: 'add', color: '#fff' }}
+                title="Add"
+                onPress={onPress}
+            />
+            <SpeedDial.Action
+                icon={{ name: 'delete', color: '#fff' }}
+                title="Delete"
+                onPress={() => console.log('Delete Something')}
+            />
+
+        </SpeedDial>
+
     </SafeAreaView>
 }

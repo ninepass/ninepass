@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TextInput, ScrollView, Dimensions, Button, Alert } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, Text, StatusBar, TextInput, ScrollView, Dimensions, Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NativeStackNavigatorProps, NativeStackScreenProps } from '@react-navigation/native-stack/lib/typescript/src/types';
 import { RootStackParamList } from './routers';
@@ -8,6 +8,7 @@ import { MaterialIcons } from '@expo/vector-icons';
 import * as Crypto from 'expo-crypto';
 import { Barometer } from 'expo-sensors';
 import * as Random from 'expo-random';
+import { Button } from "@rneui/themed";
 
 
 import { applyStoreData } from "../store/secureStore"
