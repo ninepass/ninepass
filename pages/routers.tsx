@@ -1,18 +1,18 @@
-import React, { useCallback, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 
 import PassList from './passList';
 import CreatePass from './createPass';
 import { createGlobalToken, getValueFor, getData } from "../store/secureStore"
-import { getFreeDiskStorageAsync } from 'expo-file-system';
 
-import {NinePassData} from "./createPass"
+
+import { NinePassData } from "./createPass"
+import { Dialog } from '@rneui/themed';
 
 
 const Stack = createNativeStackNavigator();
 
-global.data = getData("DATA")
 
 export type RootStackParamList = {
   PassList: undefined;
@@ -21,6 +21,7 @@ export type RootStackParamList = {
 
 
 const Routers = () => {
+  let [progress, setProgress] = useState(false)
   useEffect(() => {
     let token = getValueFor("GlobalToken")
     if (!token) {
@@ -28,14 +29,6 @@ const Routers = () => {
     }
   }, [])
 
-  // useEffect(() => {
-  //   const fetchDdata = async () => {
-  //     let data = await getData("DATA")
-  //     console.log("=================>")
-  //     global.data = data
-  //   }
-  //   fetchDdata()
-  // }, [global.data])
 
   return (
     <NavigationContainer>

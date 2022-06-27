@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, StatusBar, TextInput, ScrollView, Dimensions, Alert } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, StatusBar, Alert } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NativeStackNavigatorProps, NativeStackScreenProps } from '@react-navigation/native-stack/lib/typescript/src/types';
 import { RootStackParamList } from './routers';
@@ -12,6 +12,7 @@ import { Button, Input, Icon,Text } from "@rneui/themed";
 
 
 import { applyStoreData } from "../store/secureStore"
+import {insertData,updateData} from "../store/sqlite"
 
 
 const styles = StyleSheet.create({
@@ -65,6 +66,7 @@ const styles = StyleSheet.create({
 })
 
 export type NinePassData = {
+    id?:number
     label: string
     name: string
     site?: string
@@ -72,6 +74,7 @@ export type NinePassData = {
     phone?: string
     user: string
     password: string
+    version?:number
 }
 
 export default function CreatePass({ navigation, route }: NativeStackScreenProps<RootStackParamList, 'CreatePass'>) {
@@ -83,7 +86,7 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
     const [label, setLabel] = useState(route.params?.label || "")
     const [name, setName] = useState(route.params?.name || "")
     const [site, setSite] = useState(route.params?.site || "")
-    const [email, setEmail] = useState<any>({});
+    const [email, setEmail] = useState<string>(route.params?.email || "");
     const [phone, setPhone] = useState(route.params?.phone || "")
     const [user, setUser] = useState<string>(route.params?.user || "");
     const [password, setPassword] = useState<string>(route.params?.password || "");
@@ -118,6 +121,12 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
     }
 
     const save = async () => {
+
+
+        console.log("id: ",route.params?.id)
+
+        data.id=route.params?.id
+        data.version = route.params?.version
         data.label = label
         data.name = name
         if (!name) {
@@ -126,6 +135,7 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
         }
         data.site = site
         data.phone = phone
+        data.email = email
         if (!user) {
             notice("用户名不能为空")
             return false
@@ -138,7 +148,15 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
         data.password = password
 
         await applyStoreData("DATA", data)
+
+        if(route.params?.id){
+            updateData(data)
+        }else{
+            insertData(data)
+        }
+
         navigation.replace("PassList")
+        
         // alert(JSON.stringify(data,null,2))
     }
 

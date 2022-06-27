@@ -50,7 +50,7 @@ export const applyStoreData = async (key: string, value: any) => {
         let data = (await getData(key)) || [];
 
         data.push(value);
-        console.log("store: ", data);
+        // console.log("store: ", data);
         const jsonValue = JSON.stringify(data);
         await AsyncStorage.setItem(key, jsonValue);
     } catch (e) {

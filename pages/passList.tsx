@@ -8,7 +8,8 @@ import { Input, Icon, ListItem, Button, SpeedDial, SearchBar, SocialIcon, Avatar
 
 import { getData } from "../store/secureStore";
 import { iconDataList } from "../store/icon";
-import {NinePassData} from "./createPass"
+import { NinePassData } from "./createPass"
+import { selectData, deleteData } from "../store/sqlite"
 
 const findIcon = (name: string) => {
     let icon = iconDataList.find(item => item.type === name.toLowerCase())
@@ -19,14 +20,14 @@ const findIcon = (name: string) => {
     }
 }
 
-const Item = ({ data, navigation }: any) => (
+const Item = ({ data, navigation, deleteItem }: any) => (
     <ListItem.Swipeable
         style={styles.item}
         onPress={() => navigation.navigate("CreatePass", data)}
         rightContent={(reset) => (
             <Button
                 title="Delete"
-                onPress={() => reset()}
+                onPress={() => { deleteItem(data.id, reset); }}
                 icon={{ name: 'delete', color: 'white' }}
                 buttonStyle={{ minHeight: '100%', backgroundColor: 'red' }}
             />
@@ -101,21 +102,24 @@ const styles = StyleSheet.create({
 });
 
 export default function PassList({ navigation }: NativeStackScreenProps<RootStackParamList, 'PassList'>) {
-    const renderItem = ({ item }: any) => <Item data={item} navigation={navigation} />;
-    const [text, onChangeText] = React.useState('');
-    // const [number, onChangeNumber] = React.useState(null);
-    const [list, setList] = useState(global.data || [])
+    const renderItem = ({ item }: any) => <Item data={item} navigation={navigation} deleteItem={deleteItem} />;
+    const [search, onChangeText] = React.useState('');
+    const [list, setList] = useState<NinePassData[]>([])
     let [renderList, setRenderList] = useState<NinePassData[]>([])
+    let [interval,setIntgerval]= useState(0)
 
-    const onSearch = (search:string) => {
-        setRenderList(list.filter((item:NinePassData)=>{
-            if (item.label?.includes(search)||item.name?.includes(search)||item.user?.includes(search)){
-                return item
-            }else {
-                return false
+    const onSearch = (search: string) => {
+        if (interval){
+            let now = new Date().getTime()
+            if ((now - interval) > 400) {
+                selectData(search,callback)
+                onChangeText(search)
+                setIntgerval(0)
             }
-        }))
-        onChangeText(search)
+        }else{
+            setIntgerval(new Date().getTime())
+        }
+       
     }
 
     const onPress = () => {
@@ -124,18 +128,26 @@ export default function PassList({ navigation }: NativeStackScreenProps<RootStac
 
     const [open, setOpen] = React.useState(false);
 
+    const callback = (data: any) => {
+        // setList(data)
+        setRenderList(data)
+    }
+
     useEffect(() => {
-        const fetchDdata = async () => {
-            let data = await getData("DATA")
-            setList(data)
-            setRenderList(data)
-        }
-        fetchDdata()
+        selectData(search,callback)
+        console.log("111")
     }, [])
+
+    const deleteItem = (id: number, reset: Function) => {
+        deleteData(id);
+        selectData(search,callback)
+        reset()
+    }
+
 
     return <SafeAreaView style={styles.container}>
 
-        <SearchBar placeholder='Search' onChangeText={onSearch} value={text} onClear={() => onChangeText("")} />
+        <SearchBar placeholder='Search' onChangeText={onSearch} value={search} onClear={() => onChangeText("")} />
 
         <FlatList style={styles.listContainer} data={renderList} renderItem={renderItem} keyExtractor={(item, key) => key + ""} />
 
