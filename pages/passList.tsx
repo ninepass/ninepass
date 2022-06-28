@@ -164,9 +164,9 @@ export default function PassList({ navigation }: NativeStackScreenProps<RootStac
                 onPress={onPress}
             />
             <SpeedDial.Action
-                icon={{ name: 'delete', color: '#fff' }}
-                title="Delete"
-                onPress={() => console.log('Delete Something')}
+                icon={{ name: 'settings', color: '#fff' }}
+                title="Setting"
+                onPress={() =>  navigation.navigate('Settings', undefined)}
             />
 
         </SpeedDial>

@@ -9,6 +9,7 @@ import { createGlobalToken, getValueFor, getData } from "../store/secureStore"
 
 import { NinePassData } from "./createPass"
 import { Dialog } from '@rneui/themed';
+import Settings from './setting';
 
 
 const Stack = createNativeStackNavigator();
@@ -17,6 +18,7 @@ const Stack = createNativeStackNavigator();
 export type RootStackParamList = {
   PassList: undefined;
   CreatePass: NinePassData | undefined;
+  Settings:NinePassData | undefined;
 };
 
 
@@ -41,6 +43,11 @@ const Routers = () => {
         <Stack.Screen
           name="CreatePass"
           component={CreatePass}
+          options={{ headerShown: false }}
+        />
+         <Stack.Screen
+          name="Settings"
+          component={Settings}
           options={{ headerShown: false }}
         />
       </Stack.Navigator>

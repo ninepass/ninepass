@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { SafeAreaView, View, FlatList, StyleSheet, StatusBar, Alert } from 'react-native';
+import { SafeAreaView, View, FlatList, StyleSheet, StatusBar, Alert, KeyboardAvoidingView, TouchableWithoutFeedback, Platform, Keyboard,ScrollView } from 'react-native';
 import { MaterialCommunityIcons } from '@expo/vector-icons';
 import { NativeStackNavigatorProps, NativeStackScreenProps } from '@react-navigation/native-stack/lib/typescript/src/types';
 import { RootStackParamList } from './routers';
@@ -8,11 +8,11 @@ import { MaterialIcons } from '@expo/vector-icons';
 import * as Crypto from 'expo-crypto';
 import { Barometer } from 'expo-sensors';
 import * as Random from 'expo-random';
-import { Button, Input, Icon,Text } from "@rneui/themed";
+import { Button, Input, Icon, Text } from "@rneui/themed";
 
 
 import { applyStoreData } from "../store/secureStore"
-import {insertData,updateData} from "../store/sqlite"
+import { insertData, updateData } from "../store/sqlite"
 
 
 const styles = StyleSheet.create({
@@ -33,7 +33,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         zIndex: 1,
         right: 20,
-        bottom:40
+        bottom: 40
     },
     name: {
         fontSize: 18
@@ -48,8 +48,8 @@ const styles = StyleSheet.create({
     button: {
         width: "40%",
         marginTop: 50,
-        marginRight:10,
-        marginLeft:10
+        marginRight: 10,
+        marginLeft: 10
     },
     itemText: {
         fontSize: 15,
@@ -66,7 +66,7 @@ const styles = StyleSheet.create({
 })
 
 export type NinePassData = {
-    id?:number
+    id?: number
     label: string
     name: string
     site?: string
@@ -74,7 +74,7 @@ export type NinePassData = {
     phone?: string
     user: string
     password: string
-    version?:number
+    version?: number
 }
 
 export default function CreatePass({ navigation, route }: NativeStackScreenProps<RootStackParamList, 'CreatePass'>) {
@@ -123,9 +123,9 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
     const save = async () => {
 
 
-        console.log("id: ",route.params?.id)
+        console.log("id: ", route.params?.id)
 
-        data.id=route.params?.id
+        data.id = route.params?.id
         data.version = route.params?.version
         data.label = label
         data.name = name
@@ -149,56 +149,65 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
 
         await applyStoreData("DATA", data)
 
-        if(route.params?.id){
+        if (route.params?.id) {
             updateData(data)
-        }else{
+        } else {
             insertData(data)
         }
 
         navigation.replace("PassList")
-        
+
         // alert(JSON.stringify(data,null,2))
     }
 
-    return <SafeAreaView style={styles.container}>
-        <View style={{margin:10}}><Text h3>添加账号信息</Text></View>
-        <View style={styles.item}>
-            <Input style={styles.input} placeholder="自定义标签" leftIcon={
-                <Icon
-                    name='label'
-                    size={24}
-                    color='black'
-                />
-            } onChangeText={setLabel} value={label} />
-        </View>
-        <View style={styles.item}>
-            <Input style={styles.input} placeholder="名称*" leftIcon={
-                <Icon
-                    name='rename-box'
-                    size={24}
-                    color='black'
-                    type='material-community'
-                />
-            } onChangeText={setName} value={name} />
-        </View>
-        <View style={styles.item}>
-            <Input style={styles.input} placeholder="网址" leftIcon={
-                <Icon
-                    name='web'
-                    size={24}
-                    color='black'
-                />
-            } onChangeText={setSite} value={site} />
-        </View>
-        <View style={styles.item}>
-        <Input style={styles.input} placeholder="邮箱" leftIcon={
-                <Icon
-                    name='email'
-                    size={24}
-                    color='black'
-                />
-            } onChangeText={setEmail} value={email} />
-            {/* <Icon
+    return (
+        <ScrollView>
+        <KeyboardAvoidingView
+
+            keyboardVerticalOffset={Platform.OS === 'ios' ? 40 : 0}
+            style={{flex:1}}>
+            
+            <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
+                <SafeAreaView style={styles.container}>
+       
+                            <View style={{ margin: 10 }}><Text h3>添加账号信息</Text></View>
+                            <View style={styles.item}>
+                                <Input style={styles.input} placeholder="自定义标签" leftIcon={
+                                    <Icon
+                                        name='label'
+                                        size={24}
+                                        color='black'
+                                    />
+                                } onChangeText={setLabel} value={label} />
+                            </View>
+                            <View style={styles.item}>
+                                <Input style={styles.input} placeholder="名称*" leftIcon={
+                                    <Icon
+                                        name='rename-box'
+                                        size={24}
+                                        color='black'
+                                        type='material-community'
+                                    />
+                                } onChangeText={setName} value={name} />
+                            </View>
+                            <View style={styles.item}>
+                                <Input style={styles.input} placeholder="网址" leftIcon={
+                                    <Icon
+                                        name='web'
+                                        size={24}
+                                        color='black'
+                                    />
+                                } onChangeText={setSite} value={site} />
+                            </View>
+                            <View style={styles.item}>
+                                <Input style={styles.input} placeholder="邮箱" leftIcon={
+                                    <Icon
+                                        name='email'
+                                        size={24}
+                                        color='black'
+                                    />
+                                } onChangeText={setEmail} value={email} />
+                                {/* <Icon
                 name='email'
                 size={24}
                 color='black'
@@ -218,52 +227,60 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
                 />
             </View> */}
 
-        </View>
-        <View style={styles.item}>
-            <Input style={styles.input} placeholder="手机" leftIcon={
-                <Icon
-                    name='phone'
-                    size={24}
-                    color='black'
-                />
-            } onChangeText={setPhone} value={phone} />
-        </View>
-        <View style={styles.item}>
-            <Input style={styles.input} placeholder="用户名*"  leftIcon={
-                <Icon
-                    name='user-circle'
-                    size={24}
-                    color='black'
-                    type='font-awesome-5'
-                />
-            } onChangeText={setUser} value={user} />
-            <View style={styles.itemIcon}>
-                {user ? <MaterialIcons name="cancel" size={24} color="black" onPress={() => setUser("")} /> : <MaterialIcons name="create" size={24} color="black" onPress={createUser} />}
-            </View>
-        </View>
-        <View style={styles.item}>
-            <Input style={styles.input} placeholder="密码*"  leftIcon={
-                <Icon
-                    name='onepassword'
-                    size={24}
-                    color='black'
-                    type='material-community'
-                />
-            } onChangeText={setPassword} value={password} />
-            <View style={styles.itemIcon}>
-                {password ? <MaterialIcons name="cancel" size={24} color="black" onPress={() => setPassword("")} /> : <MaterialIcons name="create" size={24} color="black" onPress={createPassword} />}
-            </View>
-        </View>
+                            </View>
+                            <View style={styles.item}>
+                                <Input style={styles.input} placeholder="手机" leftIcon={
+                                    <Icon
+                                        name='phone'
+                                        size={24}
+                                        color='black'
+                                    />
+                                } onChangeText={setPhone} value={phone} />
+                            </View>
+                            <View style={styles.item}>
+                                <Input style={styles.input} placeholder="用户名*" leftIcon={
+                                    <Icon
+                                        name='user-circle'
+                                        size={24}
+                                        color='black'
+                                        type='font-awesome-5'
+                                    />
+                                } onChangeText={setUser} value={user} />
+                                <View style={styles.itemIcon}>
+                                    {user ? <MaterialIcons name="cancel" size={24} color="black" onPress={() => setUser("")} /> : <MaterialIcons name="create" size={24} color="black" onPress={createUser} />}
+                                </View>
+                            </View>
+                            <View style={styles.item}>
+                                <Input style={styles.input} placeholder="密码*" leftIcon={
+                                    <Icon
+                                        name='onepassword'
+                                        size={24}
+                                        color='black'
+                                        type='material-community'
+                                    />
+                                } onChangeText={setPassword} value={password} />
+                                <View style={styles.itemIcon}>
+                                    {password ? <MaterialIcons name="cancel" size={24} color="black" onPress={() => setPassword("")} /> : <MaterialIcons name="create" size={24} color="black" onPress={createPassword} />}
+                                </View>
+                            </View>
 
-        <View style={styles.item}>
-            <View style={styles.button}>
-                <Button onPress={save} title="保存" />
-            </View>
-            <View style={styles.button}>
-                <Button onPress={() => navigation.navigate("PassList")} title="取消" />
-            </View>
+                            <View style={styles.item}>
+                                <View style={styles.button}>
+                                    <Button onPress={save} title="保存" />
+                                </View>
+                                <View style={styles.button}>
+                                    <Button onPress={() => navigation.navigate("PassList")} title="取消" />
+                                </View>
 
-        </View>
+                            </View>
 
-    </SafeAreaView>
+                </SafeAreaView>
+            </TouchableWithoutFeedback>
+        </KeyboardAvoidingView>
+        </ScrollView>
+    );
+
+
+
+
 }
