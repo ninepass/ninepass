@@ -113,13 +113,13 @@ export default function PassList({ navigation }: NativeStackScreenProps<RootStac
             let now = new Date().getTime()
             if ((now - interval) > 400) {
                 selectData(search,callback)
-                onChangeText(search)
+                
                 setIntgerval(0)
             }
         }else{
             setIntgerval(new Date().getTime())
         }
-       
+        onChangeText(search)
     }
 
     const onPress = () => {

@@ -18,17 +18,25 @@ const Stack = createNativeStackNavigator();
 export type RootStackParamList = {
   PassList: undefined;
   CreatePass: NinePassData | undefined;
-  Settings:NinePassData | undefined;
+  Settings: NinePassData | undefined;
 };
 
 
 const Routers = () => {
   let [progress, setProgress] = useState(false)
   useEffect(() => {
-    let token = getValueFor("GlobalToken")
-    if (!token) {
-      createGlobalToken()
+    const fetchData = async () => {
+      return await getValueFor("GlobalToken")
     }
+    fetchData().then(token => {
+      alert(token)
+      if (!token) {
+        createGlobalToken()
+      } else {
+        global.token = token
+      }
+    })
+
   }, [])
 
 
@@ -45,7 +53,7 @@ const Routers = () => {
           component={CreatePass}
           options={{ headerShown: false }}
         />
-         <Stack.Screen
+        <Stack.Screen
           name="Settings"
           component={Settings}
           options={{ headerShown: false }}
