@@ -1,13 +1,9 @@
 import * as SQLite from "expo-sqlite";
 import {
     Platform,
-    ScrollView,
-    StyleSheet,
-    Text,
-    TextInput,
-    TouchableOpacity,
-    View,
 } from "react-native";
+
+import * as FileSystem from 'expo-file-system';
 
 function openDatabase() {
     console.log("open: ");
@@ -145,6 +141,16 @@ export const selectData = (query:string,callback: Function) => {
     );
 };
 
+export const ExportSql = async () =>{
+   let db = await FileSystem.getInfoAsync(FileSystem.documentDirectory+"")
+   console.log("db: ",decodeURIComponent(decodeURIComponent(db.uri)))
+   let a = await FileSystem.readDirectoryAsync(db.uri+"/SQLite")
+   console.log("a: ",a)
+   let b = await FileSystem.readAsStringAsync(db.uri + "/SQLite/ninepass.db",{ encoding: FileSystem.EncodingType.Base64})
+   console.log("b: ",b)
+}
+
 createTable("ninepass");
+ExportSql()
 
 export { db };

@@ -24,20 +24,20 @@ export type RootStackParamList = {
 
 const Routers = () => {
   let [progress, setProgress] = useState(false)
-  useEffect(() => {
-    const fetchData = async () => {
-      return await getValueFor("GlobalToken")
-    }
-    fetchData().then(token => {
-      alert(token)
-      if (!token) {
-        createGlobalToken()
-      } else {
-        global.token = token
-      }
-    })
+  // useEffect(() => {
+  //   const fetchData = async () => {
+  //     return await getValueFor("GlobalToken")
+  //   }
+  //   fetchData().then(token => {
+  //     alert(token)
+  //     if (!token) {
+  //       createGlobalToken()
+  //     } else {
+  //       global.token = token
+  //     }
+  //   })
 
-  }, [])
+  // }, [])
 
 
   return (

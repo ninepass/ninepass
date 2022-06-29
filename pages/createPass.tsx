@@ -78,9 +78,7 @@ export type NinePassData = {
 }
 
 export default function CreatePass({ navigation, route }: NativeStackScreenProps<RootStackParamList, 'CreatePass'>) {
-    // console.log("route: ", route.params)
 
-    const emailList = [{ id: "1", title: 'test' }, { id: "2", title: 'test2' }, { id: "3", title: 'test3' }];
     const [data, setData] = useState<NinePassData>({ label: "", name: "", site: "", email: "", phone: "", user: "", password: "" })
 
     const [label, setLabel] = useState(route.params?.label || "")
@@ -127,6 +125,10 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
 
         data.id = route.params?.id
         data.version = route.params?.version
+        if (!name) {
+            notice("标签不能为空")
+            return false
+        }
         data.label = label
         data.name = name
         if (!name) {
@@ -147,7 +149,7 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
         }
         data.password = password
 
-        await applyStoreData("DATA", data)
+        // await applyStoreData("DATA", data)
 
         if (route.params?.id) {
             updateData(data)
@@ -172,7 +174,7 @@ export default function CreatePass({ navigation, route }: NativeStackScreenProps
        
                             <View style={{ margin: 10 }}><Text h3>添加账号信息</Text></View>
                             <View style={styles.item}>
-                                <Input style={styles.input} placeholder="自定义标签" leftIcon={
+                                <Input style={styles.input} placeholder="自定义标签*" leftIcon={
                                     <Icon
                                         name='label'
                                         size={24}
